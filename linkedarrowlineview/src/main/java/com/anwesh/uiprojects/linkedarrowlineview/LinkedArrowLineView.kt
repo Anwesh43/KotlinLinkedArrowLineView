@@ -106,6 +106,7 @@ class LinkedArrowLineView(ctx : Context) : View(ctx) {
             paint.strokeWidth = GAP/12
             paint.color = Color.WHITE
             paint.strokeCap = Paint.Cap.ROUND
+            prev?.draw(canvas, paint)
             canvas.save()
             canvas.translate(i * GAP, h/2)
             val path = Path()
@@ -141,6 +142,29 @@ class LinkedArrowLineView(ctx : Context) : View(ctx) {
             }
             cb()
             return this
+        }
+    }
+
+    data class LinkedArrowLine (var i : Int) {
+        var dir : Int = 1
+
+        var curr : ArrowLineNode = ArrowLineNode(0)
+
+        fun draw(canvas : Canvas, paint : Paint) {
+            curr.draw(canvas, paint)
+        }
+
+        fun update(stopcb : (Float) -> Unit) {
+            curr.update {
+                curr = curr.getNeighbor(dir) {
+                    dir *= -1
+                }
+                stopcb(it)
+            }
+        }
+
+        fun startUpdating(startcb : () -> Unit) {
+            curr.startUpdating(startcb)
         }
     }
 }
