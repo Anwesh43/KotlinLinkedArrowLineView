@@ -40,6 +40,7 @@ class LinkedArrowLineView(ctx : Context) : View(ctx) {
                     j -= dir.toInt()
                     dir = 0f
                     prevScale = scales[j]
+                    stopcb(prevScale)
                 }
             }
         }
@@ -48,6 +49,33 @@ class LinkedArrowLineView(ctx : Context) : View(ctx) {
             if (dir == 0f) {
                 dir = 1 - 2 * prevScale
                 startcb()
+            }
+        }
+    }
+
+    data class Animator(var view : View, var animated : Boolean = false) {
+        fun animate(cb : () -> Unit) {
+            if (animated) {
+                cb()
+                try {
+                    Thread.sleep(50)
+                    view.invalidate()
+                } catch (ex : Exception) {
+
+                }
+            }
+        }
+
+        fun start() {
+            if (!animated) {
+                animated = false
+                view.postInvalidate()
+            }
+        }
+
+        fun stop() {
+            if (animated) {
+                animated = false
             }
         }
     }
