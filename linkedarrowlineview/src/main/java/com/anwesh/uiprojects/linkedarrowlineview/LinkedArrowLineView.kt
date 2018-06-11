@@ -113,13 +113,13 @@ class LinkedArrowLineView(ctx : Context) : View(ctx) {
             canvas.save()
             canvas.translate(i * GAP, h/2)
             val path = Path()
-            path.addRect(RectF(0f, -GAP/2, GAP, GAP/2), Path.Direction.CW)
+            path.addRect(RectF(GAP/12, -GAP/2, GAP, GAP/2), Path.Direction.CW)
             canvas.clipPath(path)
             canvas.save()
             canvas.translate(GAP * state.scales[0], 0f)
             for (i in 0..1) {
                 canvas.save()
-                canvas.rotate(45f * (1 - 2 * i))
+                canvas.rotate(45f * (1 - 2 * i) * state.scales[1])
                 canvas.drawLine(-GAP / 5, 0f, 0f, 0f, paint)
                 canvas.restore()
             }
