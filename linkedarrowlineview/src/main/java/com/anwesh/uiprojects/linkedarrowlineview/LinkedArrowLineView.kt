@@ -8,6 +8,7 @@ import android.app.Activity
 import android.content.*
 import android.graphics.*
 import android.content.Context
+import android.content.pm.ActivityInfo
 import android.view.View
 import android.view.MotionEvent
 
@@ -196,6 +197,7 @@ class LinkedArrowLineView(ctx : Context) : View(ctx) {
 
     companion object {
         fun create(activity : Activity) : LinkedArrowLineView {
+            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
             val view : LinkedArrowLineView = LinkedArrowLineView(activity)
             activity.setContentView(view)
             return view
