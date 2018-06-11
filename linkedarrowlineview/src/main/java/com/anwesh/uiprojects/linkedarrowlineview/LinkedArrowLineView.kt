@@ -4,6 +4,7 @@ package com.anwesh.uiprojects.linkedarrowlineview
  * Created by anweshmishra on 11/06/18.
  */
 
+import android.app.Activity
 import android.content.*
 import android.graphics.*
 import android.content.Context
@@ -190,6 +191,14 @@ class LinkedArrowLineView(ctx : Context) : View(ctx) {
             linkedArrowLine.startUpdating {
                 animator.start()
             }
+        }
+    }
+
+    companion object {
+        fun create(activity : Activity) : LinkedArrowLineView {
+            val view : LinkedArrowLineView = LinkedArrowLineView(activity)
+            activity.setContentView(view)
+            return view
         }
     }
 }
