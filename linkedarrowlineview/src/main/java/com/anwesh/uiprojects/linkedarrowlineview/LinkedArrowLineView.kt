@@ -10,6 +10,8 @@ import android.content.Context
 import android.view.View
 import android.view.MotionEvent
 
+val ARROW_LINE_NODES = 5
+
 class LinkedArrowLineView(ctx : Context) : View(ctx) {
 
     private val paint : Paint = Paint(Paint.ANTI_ALIAS_FLAG)
@@ -77,6 +79,68 @@ class LinkedArrowLineView(ctx : Context) : View(ctx) {
             if (animated) {
                 animated = false
             }
+        }
+    }
+
+    data class ArrowLineNode(var i : Int, val state : State = State()) {
+
+        var next : ArrowLineNode? = null
+
+        var prev : ArrowLineNode? = null
+
+        init {
+            addNeighbor()
+        }
+
+        fun addNeighbor() {
+            if (i < ARROW_LINE_NODES - 1) {
+                next = ArrowLineNode(i + 1)
+                next?.prev = this
+            }
+        }
+
+        fun draw(canvas : Canvas, paint : Paint) {
+            val w : Float = canvas.width.toFloat()
+            val h : Float = canvas.height.toFloat()
+            val GAP : Float = w / ARROW_LINE_NODES
+            paint.strokeWidth = GAP/12
+            paint.color = Color.WHITE
+            paint.strokeCap = Paint.Cap.ROUND
+            canvas.save()
+            canvas.translate(i * GAP, h/2)
+            val path = Path()
+            path.addRect(RectF(0f, -GAP/2, GAP, GAP/2), Path.Direction.CW)
+            canvas.clipPath(path)
+            canvas.save()
+            canvas.translate(GAP * state.scales[0], 0f)
+            for (i in 0..1) {
+                canvas.save()
+                canvas.rotate(45f * (1 - 2 * i))
+                canvas.drawLine(-GAP / 5, 0f, 0f, 0f, paint)
+                canvas.restore()
+            }
+            canvas.restore()
+            canvas.restore()
+        }
+
+        fun update(stopcb : (Float) -> Unit) {
+            state.update(stopcb)
+        }
+
+        fun startUpdating(startcb : () -> Unit) {
+            state.startUpdating(startcb)
+        }
+
+        fun getNeighbor(dir : Int, cb : () -> Unit) : ArrowLineNode {
+            var curr : ArrowLineNode? = prev
+            if (dir == 1) {
+                curr = next
+            }
+            if (curr != null) {
+                return curr
+            }
+            cb()
+            return this
         }
     }
 }
