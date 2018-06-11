@@ -167,4 +167,27 @@ class LinkedArrowLineView(ctx : Context) : View(ctx) {
             curr.startUpdating(startcb)
         }
     }
+
+    data class Renderer(var view : LinkedArrowLineView) {
+
+        val animator : Animator = Animator(view)
+
+        val linkedArrowLine : LinkedArrowLine = LinkedArrowLine(0)
+
+        fun render(canvas : Canvas, paint : Paint) {
+            canvas.drawColor(Color.parseColor("#212121"))
+            linkedArrowLine.draw(canvas, paint)
+            animator.animate {
+                linkedArrowLine.update {
+                    animator.stop()
+                }
+            }
+        }
+
+        fun handleTap() {
+            linkedArrowLine.startUpdating {
+                animator.start()
+            }
+        }
+    }
 }
